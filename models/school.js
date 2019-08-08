@@ -8,6 +8,8 @@ const schoolSchema = new mongoose.Schema({
   createTime: { type: Date, default: Date.now }
 });
 
+schoolSchema.index({rigion: 1, schoolName: 1}, {unique: true});
+
 // Create new user document
 schoolSchema.statics.create = function (payload) {
   const user = new this(payload);

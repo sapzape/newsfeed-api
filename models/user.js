@@ -3,16 +3,7 @@ const mongoose = require('mongoose');
 const userSchema = new mongoose.Schema({
   id: mongoose.Schema.Types.ObjectId,
   userId: { type: String, required: true, unique: true },
-  createTime: { type: Date, default: Date.now },
-  posts: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Post"
-  }],
-  likeSchool: [{
-    school : {type: mongoose.Schema.Types.ObjectId, ref: "School"},
-    createTime: { type: Date },
-    endTime: { type: Date }
-  }]
+  createTime: { type: Date, default: Date.now }
 });
 
 // Create new user document
