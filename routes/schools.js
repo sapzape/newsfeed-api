@@ -8,9 +8,10 @@ router.get('/', async (req, res) => {
   try {
     const school = await School.findAll()
     if (!school) return res.status(404).send({ err: 'School not found' });
-    res.status(200).send({ success: true, message: '', data: school });
+    
+    return res.status(200).send({ success: true, message: '', data: school });
   } catch(err) {
-    res.status(500).send({ success: false, message: err.toString() });
+    return res.status(500).send({ success: false, message: err.toString() });
   }
 });
 
@@ -19,9 +20,10 @@ router.post('/', async (req, res) => {
   try {
     const params = paramHandler.filterParams(req.body, whiteList);
     const school = await School.create(params);
-    res.status(201).send({ success: true, message: 'School Successfully created', data: school });
+
+    return res.status(201).send({ success: true, message: 'School Successfully created', data: school });
   } catch (err) {
-    res.status(500).send({ success: false, message: err.toString() });
+    return res.status(500).send({ success: false, message: err.toString() });
   }
 });
 
