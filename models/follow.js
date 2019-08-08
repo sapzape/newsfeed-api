@@ -4,15 +4,11 @@ const followSchema = new mongoose.Schema({
   id: mongoose.Schema.Types.ObjectId,
   userId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    unique: true,
-    index: true
+    ref: "User"
   },
   subscribeTo: {
      type: mongoose.Schema.Types.ObjectId,
-     ref: "School",
-     unique: true,
-     index: true
+     ref: "School"
   },
   startFollow: Date,
   endFollow: Date

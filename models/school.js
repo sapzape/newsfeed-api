@@ -4,7 +4,7 @@ const schoolSchema = new mongoose.Schema({
   id: mongoose.Schema.Types.ObjectId,
   owner: { type: String, required: true },
   rigion: { type: String, required: true },
-  schoolName: { type: String, required: true, unique: true },
+  schoolName: { type: String, required: true },
   createTime: { type: Date, default: Date.now }
 });
 
