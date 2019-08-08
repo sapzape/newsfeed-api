@@ -28,8 +28,13 @@ followSchema.statics.findAll = function () {
 };
 
 // Find one by UserId
-followSchema.statics.findByUserId = function(payload) {
+followSchema.statics.findOneByUserId = function(payload) {
   return this.findOne(payload);
+};
+
+// Find one by UserId
+followSchema.statics.findByUserId = function(payload) {
+  return this.find(payload);
 };
 
 // Update by UserId

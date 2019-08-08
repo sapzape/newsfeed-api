@@ -30,6 +30,11 @@ postSchema.statics.findOneByUserId = function(userId) {
   return this.findOne({ userId });
 };
 
+// Find one by UserId
+postSchema.statics.findPosts = function(payload) {
+  return this.find(payload);
+};
+
 // Update by UserId
 postSchema.statics.updateByUserId = function (userId, payload) {
   return this.findOneAndUpdate({ userId }, payload, { new: true });
