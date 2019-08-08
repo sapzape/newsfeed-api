@@ -30,6 +30,21 @@ router.post('/', async (req, res) => {
   }
 });
 
+// 유저가 구독중인 학교 조회
+router.get('/:userId/likes', async (req, res) => {
+  try {
+    const user = await User.findOneByUserId(req.params.userId);
+    if (!user) res.status(404).send('존재하지 않는 사용자입니다.');
+
+    const follows = await Follow.findByUserId({userId: user._id});
+ 
+    return res.status(201).send({ success: true, message: '구독 중인 학교', data: follows });
+  } catch (err) {
+    return res.status(500).send({ success: false, message: err.toString() });
+  }
+ });
+
+//fixme(jhkim) 구독 / 해제시 선택할 학교에 대한 지역도 같이 보내야 함
 router.put('/:userId/likes', async (req, res) => {
  try {
    const params = paramHandler.filterParams(req.body, whiteList);
@@ -39,7 +54,7 @@ router.put('/:userId/likes', async (req, res) => {
    const school = await School.findOneBySchoolName(params.schoolName);
    if (!school) res.status(404).send('존재하지 않는 학교명입니다.');
    
-   const findFollow = await Follow.findByUserId({userId: user._id, subscribeTo: school._id}).populate('userId').populate('subscribeTo');
+   const findFollow = await Follow.findOneByUserId({userId: user._id, subscribeTo: school._id}).populate('userId').populate('subscribeTo');
    if (findFollow && findFollow.endFollow === null) {
     return res.status(404).send('이미 구독중인 학교입니다.');
    }
@@ -55,6 +70,7 @@ router.put('/:userId/likes', async (req, res) => {
  }
 });
 
+//fixme(jhkim) 구독 / 해제시 선택할 학교에 대한 지역도 같이 보내야 함
 router.put('/:userId/unlikes', async (req, res) => {
  try {
    const params = paramHandler.filterParams(req.body, whiteList);
@@ -64,7 +80,7 @@ router.put('/:userId/unlikes', async (req, res) => {
    const school = await School.findOneBySchoolName(params.schoolName); 
    if (!school) return res.status(404).send('존재하지 않는 학교명입니다.');
    
-   const findFollow = await Follow.findByUserId({userId: user._id, subscribeTo: school._id}).populate('userId').populate('subscribeTo'); 
+   const findFollow = await Follow.findOneByUserId({userId: user._id, subscribeTo: school._id}).populate('userId').populate('subscribeTo');
    if (!findFollow) return res.status(404).send('구독하지 않은 학교입니다.');
    if (findFollow.endFollow !== null) return res.status(404).send('이미 구독해제한 학교입니다.');
    const updateFollow = await Follow.updateFollow({userId: user._id, subscribeTo: school._id}, {endFollow: Date.now()});
