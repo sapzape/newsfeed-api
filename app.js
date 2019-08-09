@@ -22,3 +22,5 @@ app.use('/schools', require('./routes/schools'));
 app.use('/posts', require('./routes/posts'));
 
 app.listen(port, () => console.log(`Server listening on port ${port}`));
+
+module.exports = app;

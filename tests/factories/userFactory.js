@@ -13,7 +13,7 @@ module.exports = {
 
   generate(attrs) {
     return Object.assign({}, {
-      userId: faker.internet.userName,
+      userId: faker.internet.userName(),
     }, attrs);
   }
 };

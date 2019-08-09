@@ -3,4 +3,4 @@ const chaiHttp = require('chai-http');
 const app = require('../../app');
 
 chai.use(chaiHttp);
-chai.request(app);
+module.exports = chai.request(app);
