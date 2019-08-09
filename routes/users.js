@@ -3,9 +3,17 @@ const User = require('../models/user');
 const School = require('../models/school');
 const Follow = require('../models/follow');
 const paramHandler = require('../helpers/paramHandler');
-const whiteList = ['userId', 'post', 'likeSchool', 'schoolName'];
+const whiteList = ['userId', 'position'];
 
-// 유저 조회
+router.get('/', async (req, res) => {
+  try {
+    const user = await User.findAll();
+    return res.status(200).send({ success: true, message: '', data: user });
+  } catch(err) {
+    return res.status(500).send({ success: false, message: err.toString() });
+  }
+});
+
 router.get('/:userId', async (req, res) => {
   try {
     const params = paramHandler.filterParams(req.params, whiteList);
@@ -18,10 +26,16 @@ router.get('/:userId', async (req, res) => {
   }
 });
 
-// 유저 생성
 router.post('/', async (req, res) => {
   try {
     const params = paramHandler.filterParams(req.body, whiteList);
+    const user = await User.findOneByUserId(params.userId);
+    if (user) return res.status(404).send({ err: '이미 존재하는 유져' });
+
+    const position = ['student', 'teacher', 'parent'];
+    if (params.position && position.indexOf(params.position) < 0)
+      return res.status(404).send({ err: '포지션이 잘못 됨' });
+
     const newUser = await User.create(params);
 
     return res.status(201).send({ success: true, message: 'User Successfully created', data: newUser });
@@ -30,7 +44,6 @@ router.post('/', async (req, res) => {
   }
 });
 
-// 유저가 구독중인 학교 조회
 router.get('/:userId/likes', async (req, res) => {
   try {
     const user = await User.findOneByUserId(req.params.userId);
@@ -44,7 +57,7 @@ router.get('/:userId/likes', async (req, res) => {
   }
  });
 
-//fixme(jhkim) 구독 / 해제시 선택할 학교에 대한 지역도 같이 보내야 함
+//todo(jhkim) 구독 / 해제시 선택할 학교에 대한 지역도 같이 보내야 함
 router.put('/:userId/likes', async (req, res) => {
  try {
    const params = paramHandler.filterParams(req.body, whiteList);
@@ -70,7 +83,7 @@ router.put('/:userId/likes', async (req, res) => {
  }
 });
 
-//fixme(jhkim) 구독 / 해제시 선택할 학교에 대한 지역도 같이 보내야 함
+//todo(jhkim) 구독 / 해제시 선택할 학교에 대한 지역도 같이 보내야 함
 router.put('/:userId/unlikes', async (req, res) => {
  try {
    const params = paramHandler.filterParams(req.body, whiteList);
