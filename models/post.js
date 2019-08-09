@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 const postSchema = new mongoose.Schema({
   id: mongoose.Schema.Types.ObjectId,
+  type : { type: String, default: 'general' },
   contents: { type: String, required: true },
   createTime: { type: Date, default: Date.now },
   creator: {

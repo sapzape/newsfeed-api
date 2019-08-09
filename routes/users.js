@@ -33,7 +33,7 @@ router.post('/', async (req, res) => {
     if (user) return res.status(404).send({ err: '이미 존재하는 유져' });
 
     const position = ['student', 'teacher', 'parent'];
-    if (params.position && position.indexOf(params.position) < 0)
+    if (params.position && position.indexOf(params.position.toLowerCase()) < 0)
       return res.status(404).send({ err: '포지션이 잘못 됨' });
 
     const newUser = await User.create(params);

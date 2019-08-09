@@ -4,7 +4,7 @@ const User = require('../models/user');
 const School = require('../models/school');
 const Follow = require('../models/follow');
 const paramHandler = require('../helpers/paramHandler');
-const whiteList = ['userId', 'contents', 'schoolName', 'region'];
+const whiteList = ['userId', 'contents', 'type', 'schoolName', 'region'];
 
 router.get('/', async (req, res) => {
   try {
@@ -26,7 +26,11 @@ router.post('/', async (req, res) => {
     const school = await School.findOneBySchoolInfo({schoolName: params.schoolName, region: params.region});
     if (!school) return res.status(404).send({ success: false, message: "School not found", data: null });
 
-    const newPost = await Post.create({contents: params.contents, creator: user._id, from: school._id});
+    const postType = ['general', 'notice'];
+    if (params.type && postType.indexOf(params.type.toLowerCase()) < 0) return res.status(404).send({ err: '존재하는 타입이 아님' });
+    if ((params.userId !== school.owner) && (params.type.toLowerCase() === 'notice')) return res.status(404).send({ err: '학교 관리자만 글쓰기가 가능합니다.' });
+
+    const newPost = await Post.create({contents: params.contents, creator: user._id, from: school._id, type: params.type.toLowerCase()});
     return res.status(201).send({ success: true, message: 'Post Successfully created', data: newPost });
   } catch (err) {
     return res.status(500).send({ success: false, message: err.toString() });
