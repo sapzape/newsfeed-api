@@ -9,9 +9,7 @@ const whiteList = ['userId', 'contents', 'type', 'schoolName', 'region'];
 router.get('/', async (req, res) => {
   try {
     const post = await Post.findAll()
-    if (!post) return res.status(404).send({ err: 'Post not found' });
-    
-    return res.status(200).send({ success: true, message: '', data: post });
+    return res.status(200).send({ success: true, message: 'Registered post search success.', data: post });
   } catch(err) {
     return res.status(500).send({ success: false, message: err.toString() });
   }
@@ -21,17 +19,17 @@ router.post('/', async (req, res) => {
   try {
     const params = paramHandler.filterParams(req.body, whiteList);
     const user = await User.findOneByUserId(params.userId)
-    if (!user) return res.status(404).send({ success: false, message: "User not found", data: null });
+    if (!user) return res.status(401).send({ success: false, message: `'${params.userId}' user is not registered.` });
 
     const school = await School.findOneBySchoolInfo({schoolName: params.schoolName, region: params.region});
-    if (!school) return res.status(404).send({ success: false, message: "School not found", data: null });
+    if (!school) return res.status(401).send({ success: false, message: `'${params.schoolName}' not a registered school` });
 
     const postType = ['general', 'notice'];
-    if (params.type && postType.indexOf(params.type.toLowerCase()) < 0) return res.status(404).send({ err: '존재하는 타입이 아님' });
-    if ((params.userId !== school.owner) && (params.type.toLowerCase() === 'notice')) return res.status(404).send({ err: '학교 관리자만 글쓰기가 가능합니다.' });
+    if (params.type && postType.indexOf(params.type.toLowerCase()) < 0) return res.status(404).send({ success: false, message: "Type does not exist." });
+    if ((params.userId !== school.owner) && (params.type.toLowerCase() === 'notice')) return res.status(404).send({ success: false, message: "Only school administrators can write." });
 
     const newPost = await Post.create({contents: params.contents, creator: user._id, from: school._id, type: params.type.toLowerCase()});
-    return res.status(201).send({ success: true, message: 'Post Successfully created', data: newPost });
+    return res.status(200).send({ success: true, message: 'Post registration was successful.', data: newPost });
   } catch (err) {
     return res.status(500).send({ success: false, message: err.toString() });
   }
@@ -42,10 +40,10 @@ router.get('/:userId', async (req, res) => {
  try {
    const params = paramHandler.filterParams(req.params, whiteList);
    const user = await User.findOneByUserId(params.userId);
-   if (!user) return res.status(404).send({ err: 'User not found' });
+   if (!user) return res.status(401).send({ success: false, message: `'${params.userId}' user is not registered.` });
 
    const follows = await Follow.findByUserId({userId: user._id});
-   if (!follows) return res.status(404).send({ err: '구독 중인 학교 없음' });
+   if (!follows) return res.status(401).send({ success: false, message: "There are no schools to subscribe." });
 
    let postList = [];
    for (let follow of follows) {
@@ -53,7 +51,7 @@ router.get('/:userId', async (req, res) => {
     let posts = await Post.findPosts({from: follow.subscribeTo._id, createTime: {"$gte": follow.startFollow, "$lt": endTime}}).populate({path: 'creator', select: '-_id userId'}).populate({path: 'from', select: '-_id region schoolName'});
      if (posts) postList.push(...posts);
    }
-   return res.status(201).send({ success: true, message: 'Post 조회', data: postList });
+   return res.status(200).send({ success: true, message: 'Registered post search success.', data: postList });
  } catch (err) {
    return res.status(500).send({ success: false, message: err.toString() });
  }
