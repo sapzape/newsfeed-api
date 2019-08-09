@@ -40,13 +40,13 @@ router.get('/:userId', async (req, res) => {
    const user = await User.findOneByUserId(params.userId);
    if (!user) return res.status(404).send({ err: 'User not found' });
 
-   const follows = await Follow.findByUserId({userId: user._id}).populate('userId').populate('subscribeTo');
+   const follows = await Follow.findByUserId({userId: user._id});
    if (!follows) return res.status(404).send({ err: '구독 중인 학교 없음' });
 
    let postList = [];
    for (let follow of follows) {
     let endTime = (follow.endFollow === null) ? Date.now() : follow.endFollow;
-    let posts = await Post.findPosts({from: follow.subscribeTo._id, createTime: {"$gte": follow.startFollow, "$lt": endTime}}).populate('creator').populate('from');
+    let posts = await Post.findPosts({from: follow.subscribeTo._id, createTime: {"$gte": follow.startFollow, "$lt": endTime}}).populate({path: 'creator', select: '-_id userId'}).populate({path: 'from', select: '-_id region schoolName'});
      if (posts) postList.push(...posts);
    }
    return res.status(201).send({ success: true, message: 'Post 조회', data: postList });
