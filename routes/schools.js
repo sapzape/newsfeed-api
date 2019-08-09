@@ -14,10 +14,12 @@ router.get('/', async (req, res) => {
   }
 });
 
-//todo(jhkim) 이미 존재하는 학교 처리 필요
 router.post('/', async (req, res) => {
   try {
     const params = paramHandler.filterParams(req.body, whiteList);
+    const checkSchool = await School.findOneBySchoolInfo({schoolName: params.schoolName, region: params.region});
+    if (checkSchool) return res.status(404).send({ success: false, message: "이미 존재하는 학교", data: null });
+
     const school = await School.create(params);
 
     return res.status(201).send({ success: true, message: 'School Successfully created', data: school });
