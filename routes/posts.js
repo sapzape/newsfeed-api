@@ -6,7 +6,6 @@ const Follow = require('../models/follow');
 const paramHandler = require('../helpers/paramHandler');
 const whiteList = ['userId', 'schoolName', 'contents'];
 
-// 글 조회
 router.get('/', async (req, res) => {
   try {
     const post = await Post.findAll()
@@ -17,7 +16,6 @@ router.get('/', async (req, res) => {
   }
 });
 
-// 글쓰기
 router.post('/', async (req, res) => {
   try {
     const params = paramHandler.filterParams(req.body, whiteList);
@@ -34,7 +32,8 @@ router.post('/', async (req, res) => {
   }
 });
 
-//fixme(jhkim) 구독 중인 학교 별로 조회시, 구독 시작/ 종료 시점 조건 추가 필요
+//todo(jhkim) 구독 중인 학교 별로 조회시, 구독 시작/ 종료 시점 조건 추가 필요
+//todo(jhkim) offset / limit 설정 필요
 router.get('/:userId', async (req, res) => {
  try {
    const params = paramHandler.filterParams(req.params, whiteList);
@@ -47,7 +46,7 @@ router.get('/:userId', async (req, res) => {
    let postList = [];
    for (let follow of follows) {
     let posts = await Post.findPosts({from: follow.subscribeTo._id}).populate('creator').populate('from');
-     if (posts) postList.push(posts);
+     if (posts) postList.push(...posts);
    }
    res.status(201).send({ success: true, message: 'Post 조회', data: postList });
  } catch (err) {

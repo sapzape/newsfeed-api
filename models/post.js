@@ -14,36 +14,29 @@ const postSchema = new mongoose.Schema({
   }
 });
 
-// Create new user document
 postSchema.statics.create = function (payload) {
   const user = new this(payload);
   return user.save();
 };
 
-// Find all
 postSchema.statics.findAll = function () {
   return this.find({});
 };
 
-// Find one by UserId
 postSchema.statics.findOneByUserId = function(userId) {
   return this.findOne({ userId });
 };
 
-// Find one by UserId
 postSchema.statics.findPosts = function(payload) {
-  return this.find(payload);
+  return this.find(payload).sort({date: -1}).limit(20);
 };
 
-// Update by UserId
 postSchema.statics.updateByUserId = function (userId, payload) {
   return this.findOneAndUpdate({ userId }, payload, { new: true });
 };
 
-// Delete by UserId
 postSchema.statics.deleteByUserId = function (userId) {
   return this.remove({ userId });
 };
 
-// Create model & export
 module.exports = mongoose.model('Post', postSchema);

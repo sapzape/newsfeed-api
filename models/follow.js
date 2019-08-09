@@ -16,36 +16,29 @@ const followSchema = new mongoose.Schema({
 
 followSchema.index({userId: 1, subscribeTo: 1}, {unique: true});
 
-// Create new user document
 followSchema.statics.create = function (payload) {
   const user = new this(payload);
   return user.save();
 };
 
-// Find all
 followSchema.statics.findAll = function () {
   return this.find({});
 };
 
-// Find one by UserId
 followSchema.statics.findOneByUserId = function(payload) {
   return this.findOne(payload);
 };
 
-// Find one by UserId
 followSchema.statics.findByUserId = function(payload) {
   return this.find(payload);
 };
 
-// Update by UserId
 followSchema.statics.updateFollow = function (select, payload) {
   return this.findOneAndUpdate(select, payload, { new: true });
 };
 
-// Delete by UserId
 followSchema.statics.deleteByUserId = function (userId) {
   return this.remove({ userId });
 };
 
-// Create model & export
 module.exports = mongoose.model('Follow', followSchema);

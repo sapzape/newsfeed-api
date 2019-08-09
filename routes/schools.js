@@ -1,9 +1,8 @@
 const router = require('express').Router();
 const School = require('../models/school');
 const paramHandler = require('../helpers/paramHandler');
-const whiteList = ['owner', 'rigion', 'schoolName'];
+const whiteList = ['owner', 'region', 'schoolName'];
 
-// 학교 조회
 router.get('/', async (req, res) => {
   try {
     const school = await School.findAll()
@@ -15,7 +14,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-// 학교 페이지 생성
+//todo(jhkim) 이미 존재하는 학교 처리 필요
 router.post('/', async (req, res) => {
   try {
     const params = paramHandler.filterParams(req.body, whiteList);
