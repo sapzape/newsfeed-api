@@ -1,4 +1,5 @@
 const faker = require('faker');
+faker.locale = 'ko';
 
 module.exports = {
   generates(count, attrs = {}) {

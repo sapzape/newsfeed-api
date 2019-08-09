@@ -1,10 +1,9 @@
 const chai = require('chai');
-const app = require('../../app');
+const app = require('../../../app');
 const expect = chai.expect;
 
-const server = require('../utils/mockServer');
-const User = require('../../models/user');
-const factory = require('../factories/userFactory');
+const User = require('../../../models/user');
+const factory = require('../../factories/userFactory');
 
 const ENDPOINT = '/users';
 let mockUser;
@@ -28,13 +27,13 @@ describe(`PUT ${ENDPOINT}`, () => {
         });
 
       it('shold be resubscribed and return 201 status code', done => {
-
+        done();
       });
     });
 
-    descibe(`PUT ${ENDPOINT}/unlikes`, () => {
+    describe(`PUT ${ENDPOINT}/unlikes`, () => {
       it('should be unsubscribed and return 201 status code', done => {
-
+        done();
       });
     });
   });
@@ -42,33 +41,33 @@ describe(`PUT ${ENDPOINT}`, () => {
   describe('when sending the wrong data', () => {
     describe(`PUT ${ENDPOINT}/likes`, () => {
       it('should get a message that the user not exists and return 404 status code', done => {
-
+        done();
       });
 
       it('should get a message that the school not exists and return 404 status code', done => {
-
+        done();
       });
 
       it('should get a message that already subscribed to school and return 404 status code', done => {
-
+        done();
       });
     });
 
     describe(`PUT ${ENDPOINT}/unlikes`, () => {
       it('should get a message that the user not exists and return 404 status code', done => {
-
+        done();
       });
 
       it('should get a message that the school not exists and return 404 status code', done => {
-
+        done();
       });
 
       it('should get a message that never subscribed to school and return 404 status code', done => {
-
+        done();
       });
 
       it('should get a message that already unsubscribed to school and return 404 status code', done => {
-
+        done();
       });
     });
   });
