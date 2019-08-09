@@ -19,16 +19,16 @@ schoolSchema.statics.findAll = function () {
   return this.find({});
 };
 
-schoolSchema.statics.findOneBySchoolName = function(schoolName) {
-  return this.findOne({ schoolName });
+schoolSchema.statics.findOneBySchoolInfo = function(schoolInfo) {
+  return this.findOne(schoolInfo);
 };
 
-schoolSchema.statics.updateBySchoolName = function (schoolName, payload) {
-  return this.findOneAndUpdate({ schoolName }, payload, { new: true });
+schoolSchema.statics.updateBySchoolInfo = function (schoolInfo, payload) {
+  return this.findOneAndUpdate(schoolInfo, payload, { new: true });
 };
 
-schoolSchema.statics.deleteBySchoolName = function (schoolName) {
-  return this.remove({ schoolName });
+schoolSchema.statics.deleteBySchoolInfo = function (schoolInfo) {
+  return this.remove(schoolInfo);
 };
 
 module.exports = mongoose.model('School', schoolSchema);

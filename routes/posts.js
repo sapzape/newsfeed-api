@@ -22,7 +22,7 @@ router.post('/', async (req, res) => {
     const user = await User.findOneByUserId(params.userId)
     if (!user) res.status(404).send({ success: false, message: "User not found", data: null });
 
-    const school = await School.findOneBySchoolName(params.schoolName);
+    const school = await School.findOneBySchoolInfo({schoolName: params.schoolName});
     if (!school) res.status(404).send({ success: false, message: "School not found", data: null });
 
     const newPost = await Post.create({contents: params.contents, creator: user._id, from: school._id});

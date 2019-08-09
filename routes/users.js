@@ -3,7 +3,7 @@ const User = require('../models/user');
 const School = require('../models/school');
 const Follow = require('../models/follow');
 const paramHandler = require('../helpers/paramHandler');
-const whiteList = ['userId', 'position'];
+const whiteList = ['userId', 'position', 'schoolName', 'region'];
 
 router.get('/', async (req, res) => {
   try {
@@ -57,14 +57,13 @@ router.get('/:userId/likes', async (req, res) => {
   }
  });
 
-//todo(jhkim) 구독 / 해제시 선택할 학교에 대한 지역도 같이 보내야 함
 router.put('/:userId/likes', async (req, res) => {
  try {
    const params = paramHandler.filterParams(req.body, whiteList);
    const user = await User.findOneByUserId(req.params.userId);
    if (!user) res.status(404).send('존재하지 않는 사용자입니다.');
    
-   const school = await School.findOneBySchoolName(params.schoolName);
+   const school = await School.findOneBySchoolInfo({schoolName: params.schoolName, region: params.region});
    if (!school) res.status(404).send('존재하지 않는 학교명입니다.');
    
    const findFollow = await Follow.findOneByUserId({userId: user._id, subscribeTo: school._id}).populate('userId').populate('subscribeTo');
@@ -83,14 +82,13 @@ router.put('/:userId/likes', async (req, res) => {
  }
 });
 
-//todo(jhkim) 구독 / 해제시 선택할 학교에 대한 지역도 같이 보내야 함
 router.put('/:userId/unlikes', async (req, res) => {
  try {
    const params = paramHandler.filterParams(req.body, whiteList);
    const user = await User.findOneByUserId(req.params.userId);
    if (!user) res.status(404).send('존재하지 않는 사용자입니다.');
 
-   const school = await School.findOneBySchoolName(params.schoolName); 
+   const school = await School.findOneBySchoolInfo({schoolName: params.schoolName, region: params.region}); 
    if (!school) return res.status(404).send('존재하지 않는 학교명입니다.');
    
    const findFollow = await Follow.findOneByUserId({userId: user._id, subscribeTo: school._id}).populate('userId').populate('subscribeTo');
