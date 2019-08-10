@@ -20,6 +20,8 @@
     "chai": "^4.2.0",
     "chai-http": "^4.3.0",
     "faker": "^4.1.0",
-    "mocha": "^6.2.0"
+    "mocha": "^6.2.0",
+    "swagger-jsdoc": "^3.4.0",
+    "swagger-ui-express": "^4.0.7"
   }
 }

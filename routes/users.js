@@ -1,3 +1,9 @@
+/**
+ * @swagger
+ * tags:
+ *   name: Users
+ *   description: 사용자 데이터 관련 API
+ */
 const router = require("express").Router()
 const User = require("../models/user")
 const School = require("../models/school")
@@ -5,6 +11,142 @@ const Follow = require("../models/follow")
 const paramHandler = require("../helpers/paramHandler")
 const whiteList = ["userId", "position", "schoolName", "region"]
 
+/**
+ * @swagger
+ * /users:
+ *   get:
+ *     summary: 전체 사용자 정보 조회
+ *     tags: [Users]
+ *     parameters:
+ *     responses:
+ *       200:
+ *         description: OK - 처리 완료
+ *       401:
+ *         description: Unauthrized -인증되지 않은 사용자, 학교
+ *       404:
+ *         description: Not Found - 찾을 수 없음
+ *       500:
+ *         description: Internal server error -내부 서버 오류
+ * /users/{userId}:
+ *   get:
+ *     summary: 사용자 정보 조회
+ *     tags: [Users]
+ *     parameters:
+ *       - in: query
+ *         name: userId
+ *         type: string
+ *         description: |
+ *          조회할 사용자 아이디
+ *     responses:
+ *       200:
+ *         description: OK - 처리 완료
+ *       401:
+ *         description: Unauthrized -인증되지 않은 사용자, 학교
+ *       404:
+ *         description: Not Found - 찾을 수 없음
+ *       500:
+ *         description: Internal server error -내부 서버 오류
+ *   post:
+ *     summary: 사용자 정보 등록
+ *     tags: [Users]
+ *     parameters:
+ *       - in: query
+ *         name: userId
+ *         type: string
+ *         description: |
+ *          등록할 사용자 아이디
+ *       - in: query
+ *         name: position
+ *         type: string
+ *         enum: [student, teacher, parent]
+ *         description: |
+ *          사용자 타입
+ *     responses:
+ *       200:
+ *         description: OK - 처리 완료
+ *       401:
+ *         description: Unauthrized -인증되지 않은 사용자, 학교
+ *       404:
+ *         description: Not Found - 찾을 수 없음
+ *       500:
+ *         description: Internal server error -내부 서버 오류
+ * /users/{userId}/likes:
+ *   get:
+ *     summary: 구독한 학교 페이지 조회
+ *     tags: [Users]
+ *     parameters:
+ *       - in: query
+ *         name: userId
+ *         type: string
+ *         description: |
+ *          사용자 아이디
+ *     responses:
+ *       200:
+ *         description: OK - 처리 완료
+ *       401:
+ *         description: Unauthrized -인증되지 않은 사용자, 학교
+ *       404:
+ *         description: Not Found - 찾을 수 없음
+ *       500:
+ *         description: Internal server error -내부 서버 오류
+ *   put:
+ *     summary: 학교 페이지 구독
+ *     tags: [Users]
+ *     parameters:
+ *       - in: query
+ *         name: userId
+ *         type: string
+ *         description: |
+ *          구독할 사용자 아이디
+ *       - in: query
+ *         name: region
+ *         type: string
+ *         description: |
+ *          학교 지역
+ *       - in: query
+ *         name: schoolName
+ *         type: string
+ *         description: |
+ *          학교명
+ *     responses:
+ *       200:
+ *         description: OK - 처리 완료
+ *       401:
+ *         description: Unauthrized -인증되지 않은 사용자, 학교
+ *       404:
+ *         description: Not Found - 찾을 수 없음
+ *       500:
+ *         description: Internal server error -내부 서버 오류
+ * /users/{userId}/unlikes:
+ *   put:
+ *     summary: 학교 페이지 구독 해제
+ *     tags: [Users]
+ *     parameters:
+ *       - in: query
+ *         name: userId
+ *         type: string
+ *         description: |
+ *          구독 해제할 사용자 아이디
+ *       - in: query
+ *         name: region
+ *         type: string
+ *         description: |
+ *          학교 지역
+ *       - in: query
+ *         name: schoolName
+ *         type: string
+ *         description: |
+ *          학교명
+ *     responses:
+ *       200:
+ *         description: OK - 처리 완료
+ *       401:
+ *         description: Unauthrized -인증되지 않은 사용자, 학교
+ *       404:
+ *         description: Not Found - 찾을 수 없음
+ *       500:
+ *         description: Internal server error -내부 서버 오류
+ */
 router.get("/", async (req, res) => {
   try {
     const user = await User.findAll()
