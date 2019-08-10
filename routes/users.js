@@ -91,7 +91,7 @@ router.put("/:userId/likes", async (req, res) => {
       region: params.region
     })
     if (!school)
-      res
+      return res
         .status(401)
         .send({ success: false, message: `'${params.schoolName}' not a registered school.` })
 

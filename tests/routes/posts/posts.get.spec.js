@@ -30,15 +30,15 @@ describe(`GET ${ENDPOINT}`, () => {
     mockUser = await User.create(userFactory.generate())
     mockSchool = await School.create(schoolFactory.generate())
 
-    let tempFollow = followFactory.generate()
-    tempFollow.userId = mockUser._id
-    tempFollow.subscribeTo = mockSchool._id
-    await Follow.create(tempFollow)
+    let follow = followFactory.generate()
+    follow.userId = mockUser._id
+    follow.subscribeTo = mockSchool._id
+    await Follow.create(follow)
 
-    let tempPost = postFactory.generate()
-    tempPost.creator = mockUser._id
-    tempPost.from = mockSchool._id
-    mockPost = await Post.create(tempPost)
+    let post = postFactory.generate()
+    post.creator = mockUser._id
+    post.from = mockSchool._id
+    mockPost = await Post.create(post)
   })
 
   describe("when sending the correct data", () => {

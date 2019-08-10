@@ -47,12 +47,10 @@ describe(`POST ${ENDPOINT}`, () => {
       })
 
       it("should get a message that the wrong position and return 404 status code", done => {
-        let tempMockUser = userFactory.generate()
-        tempMockUser.position = "student1"
         chai
           .request(app)
           .post(ENDPOINT)
-          .send(tempMockUser)
+          .send({ userId: `${mockUser}test`, position: "student1" })
           .end((err, res) => {
             expect(res).to.have.status(404)
             done()
