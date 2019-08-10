@@ -90,7 +90,7 @@ describe(`PUT ${ENDPOINT}`, () => {
           })
       })
 
-      it(">>> should get a message that the school not exists and return 404 status code", done => {
+      it("should get a message that the school not exists and return 404 status code", done => {
         chai
           .request(app)
           .put(`${ENDPOINT}/${mockUser.userId}/likes`)
