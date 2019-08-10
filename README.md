@@ -12,8 +12,9 @@ API implementation related to SNS newsfeed feature.
 
 ## Test
 
-`npm test`
+1. Unit(API) test : `npm test`
+2. Stressful test : `artillery run ./tests/stress/users/users.stress.yml`
 
 ## API Specification
 
-After running the API server, check the server host + /api-docs.
+After running the API server, check the server `hostadress+/api-docs`.
