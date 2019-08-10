@@ -1,37 +1,49 @@
-const chai = require('chai');
-const app = require('../../../app')
-const expect = chai.expect;
+const chai = require("chai")
+const chaiHttp = require("chai-http")
+const app = require("../../../app")
+const expect = chai.expect
 
-const User = require('../../../models/user');
-const factory = require('../../factories/userFactory');
+const School = require("../../../models/school")
+const schoolFactory = require("../../factories/schoolFactory")
 
-const ENDPOINT = '/schools';
+const ENDPOINT = "/schools"
+
+let mockSchool
 
 describe(`POST ${ENDPOINT}`, () => {
-  before(() => {
-    return User.remove({});
-  });
+  before(async () => {
+    chai.use(chaiHttp)
+    await School.remove({})
+    mockSchool = await School.create(schoolFactory.generate())
+  })
 
-  describe('when sending the not exists school information', () => {
+  describe("when sending the not exists school information", () => {
     describe(`POST ${ENDPOINT}`, () => {
-      it('should regist new school information and return 201 status code', done => {
-         chai.request(app).post(ENDPOINT)
-          .send(factory.generate())
+      it("should regist new school information and return 200 status code", done => {
+        chai
+          .request(app)
+          .post(ENDPOINT)
+          .send(schoolFactory.generate())
           .end((err, res) => {
-            expect(res).to.have.status(201);
-            done();
-        });
-      });
-    });
-  });
+            expect(res).to.have.status(200)
+            done()
+          })
+      })
+    })
+  })
 
-  //todo(jhkim) 라우터 메서드 내 예외 처리 신규 추가 필요
-  describe('when sending the exists school information', () => {
+  describe("when sending the exists school information", () => {
     describe(`POST ${ENDPOINT}`, () => {
-      it('should get a message that the school already exists and return 404 status code', done => {
-        done();
-      });
-    });
-  });
-});
-
+      it("should get a message that the school already exists and return 404 status code", done => {
+        chai
+          .request(app)
+          .post(ENDPOINT)
+          .send(mockSchool)
+          .end((err, res) => {
+            expect(res).to.have.status(404)
+            done()
+          })
+      })
+    })
+  })
+})

@@ -1,38 +1,80 @@
-const chai = require('chai');
-const app = require('../../../app');
-const expect = chai.expect;
+const chai = require("chai")
+const chaiHttp = require("chai-http")
+const app = require("../../../app")
+const expect = chai.expect
 
-const Post = require('../../../models/post');
-const factory = require('../../factories/userFactory');
+const User = require("../../../models/user")
+const School = require("../../../models/school")
+const Follow = require("../../../models/follow")
+const Post = require("../../../models/post")
+const userFactory = require("../../factories/userFactory")
+const schoolFactory = require("../../factories/schoolFactory")
+const followFactory = require("../../factories/followFactory")
+const postFactory = require("../../factories/postFactory")
 
-const ENDPOINT = '/posts';
-let mockPost;
+const ENDPOINT = "/posts"
+
+let mockUser
+let mockSchool
+let mockPost
 
 describe(`GET ${ENDPOINT}`, () => {
-  before(() => {
-    return Post.remove({})
-      .then(() => Post.create(factory.generate()))
-      .then((post) => mockPost = post);
-  });
+  before(async () => {
+    chai.use(chaiHttp)
 
-  describe('when sending the correct data', () => {
+    await User.remove({})
+    await School.remove({})
+    await Follow.remove({})
+    await Post.remove({})
+
+    mockUser = await User.create(userFactory.generate())
+    mockSchool = await School.create(schoolFactory.generate())
+
+    let tempFollow = followFactory.generate()
+    tempFollow.userId = mockUser._id
+    tempFollow.subscribeTo = mockSchool._id
+    await Follow.create(tempFollow)
+
+    let tempPost = postFactory.generate()
+    tempPost.creator = mockUser._id
+    tempPost.from = mockSchool._id
+    mockPost = await Post.create(tempPost)
+  })
+
+  describe("when sending the correct data", () => {
     describe(`GET ${ENDPOINT}/:userId`, () => {
-      it('should get feeds from subscribe schools and return 201 status code', done => {
-        chai.request(app).get(ENDPOINT + '/'+mockPost.userId)
+      it("should get feeds from subscribe schools and return 200 status code", done => {
+        chai
+          .request(app)
+          .get(`${ENDPOINT}/${mockUser.userId}`)
           .end((err, res) => {
-            expect(res).to.have.status(200);
-            done(); 
-        });
-      });
-    });
-  });
+            expect(res).to.have.status(200)
+            expect(res.body.data[0].creator.userId).to.be.equal(mockUser.userId)
+            expect(res.body.data[0].from.region).to.be.equal(mockSchool.region)
+            expect(res.body.data[0].from.schoolName).to.be.equal(mockSchool.schoolName)
+            expect(res.body.data[0].contents).to.be.equal(mockPost.contents)
+            done()
+          })
+      })
 
-  describe('when sending the wrong data', () => {
-    describe(`GET ${ENDPOINT}/:userId`, () => {
-      it('should get a message that the user not exists and return 404 status code', done => {
-        done();
-      });
-    });
-  });
-});
-
+      it("should get a message that the user not exists and return 200 status code", done => {
+        Follow.updateFollow(
+          { userId: mockUser._id, subscribeTo: mockSchool._id },
+          { endFollow: Date.now() }
+        ).then(() => {
+          chai
+            .request(app)
+            .get(ENDPOINT + "/" + mockUser.userId)
+            .end((err, res) => {
+              expect(res).to.have.status(200)
+              expect(res.body.data[0].creator.userId).to.be.equal(mockUser.userId)
+              expect(res.body.data[0].from.region).to.be.equal(mockSchool.region)
+              expect(res.body.data[0].from.schoolName).to.be.equal(mockSchool.schoolName)
+              expect(res.body.data[0].contents).to.be.equal(mockPost.contents)
+              done()
+            })
+        })
+      })
+    })
+  })
+})
