@@ -1,0 +1,418 @@
+swagger: "2.0"
+info:
+  description: "API implementation related to SNS newsfeed feature."
+  version: "1.0.0"
+  title: "News Feed API"
+  contact:
+    email: "sapzape@gmail.com"
+host: "localhost:4500"
+basePath: "/"
+tags:
+  - name: "users"
+    description: "Operations about users - [/users 관련 기능]"
+  - name: "schools"
+    description: "Operations about schools - [/schools 관련 기능]"
+  - name: "posts"
+    description: "Operations about schools - [/posts 관련 기능]"
+schemes:
+  - "https"
+  - "http"
+paths:
+  /users:
+    get:
+      tags:
+        - "users"
+      summary: "Get all users - [전체 사용자 조회]"
+      description: "등록된 전체 사용자를 조회합니다."
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/xml"
+        - "application/json"
+      responses:
+        200:
+          description: OK - 처리 완료
+        401:
+          description: Unauthrized - 인증되지 않은 사용자, 학교
+        404:
+          description: Not Found - 찾을 수 없음
+        500:
+          description: Internal server error - 내부 서버 오류
+    post:
+      tags:
+        - "users"
+      summary: "Create user - [사용자 등록]"
+      description: "사용자를 등록합니다. position은 기본값으로 'student'로 설정됩니다. (enum : student, teacher, parent)"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/xml"
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "Body"
+          description: "사용자 등록을 위한 필요 정보"
+          schema:
+            type: object
+            required:
+              - userId
+            properties:
+              userId:
+                type: string
+              position:
+                type: string
+                default: "student"
+      responses:
+        200:
+          description: OK - 처리 완료
+        401:
+          description: Unauthrized - 인증되지 않은 사용자, 학교
+        404:
+          description: Not Found - 찾을 수 없음
+        500:
+          description: Internal server error - 내부 서버 오류
+  /users/{userId}:
+    get:
+      tags:
+        - "users"
+      summary: "Get user - [사용자 조회]"
+      description: "사용자 아이디를 통해 정보를 조회합니다."
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/xml"
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "userId"
+          description: "사용자 계정 정보"
+          required: true
+          type: "string"
+      responses:
+        200:
+          description: OK - 처리 완료
+        401:
+          description: Unauthrized - 인증되지 않은 사용자, 학교
+        404:
+          description: Not Found - 찾을 수 없음
+        500:
+          description: Internal server error - 내부 서버 오류
+  /users/{userId}/likes:
+    get:
+      tags:
+        - "users"
+      summary: "Get subscribed school pages - [구독한 학교 페이지 조회]"
+      description: "사용자가 구독한 학교 페이지 리스트를 조회합니다. (ex. 사용자로서 구독중인 학교 목록을 확인하고 싶다.)"
+      produces:
+        - "application/xml"
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "userId"
+          description: "사용자 계정 정보"
+          required: true
+          type: "string"
+      responses:
+        200:
+          description: OK - 처리 완료
+        401:
+          description: Unauthrized - 인증되지 않은 사용자, 학교
+        404:
+          description: Not Found - 찾을 수 없음
+        500:
+          description: Internal server error - 내부 서버 오류
+    put:
+      tags:
+        - "users"
+      summary: "Subscribe to school page - [학교 페이지 구독]"
+      description: "학교 페이지를 구독합니다. (ex. 사용자로서 학교 페이지를 구독하고 싶다.)"
+      produces:
+        - "application/xml"
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "userId"
+          description: "사용자 계정 정보"
+          required: true
+          type: "string"
+        - in: "body"
+          name: "Body"
+          description: "구독 정보"
+          required: true
+          schema:
+            type: object
+            required:
+              - region
+              - schoolName
+            properties:
+              schoolName:
+                type: string
+              region:
+                type: string
+      responses:
+        200:
+          description: OK - 처리 완료
+        401:
+          description: Unauthrized - 인증되지 않은 사용자, 학교
+        404:
+          description: Not Found - 찾을 수 없음
+        500:
+          description: Internal server error - 내부 서버 오류
+  /users/{userId}/unlikes:
+    put:
+      tags:
+        - "users"
+      summary: "Unsubscribe to school page - [학교 페이지 구독해지]"
+      description: "구독중인 학교 페이지를 구독 해제합니다. (ex. 사용자로서 학교 페이지 구독을 취소하고 싶다.)"
+      produces:
+        - "application/xml"
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "userId"
+          description: "사용자 계정 정보"
+          required: true
+          type: "string"
+        - in: "body"
+          name: "Body"
+          description: "구독 정보"
+          required: true
+          schema:
+            type: object
+            required:
+              - region
+              - schoolName
+            properties:
+              schoolName:
+                type: string
+              region:
+                type: string
+      responses:
+        200:
+          description: OK - 처리 완료
+        401:
+          description: Unauthrized - 인증되지 않은 사용자, 학교
+        404:
+          description: Not Found - 찾을 수 없음
+        500:
+          description: Internal server error - 내부 서버 오류
+  /schools:
+    get:
+      tags:
+        - "schools"
+      summary: "Get all school - [전체 학교 조회]"
+      description: "등록된 전체 학교를 조회합니다."
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/xml"
+        - "application/json"
+      responses:
+        200:
+          description: OK - 처리 완료
+        401:
+          description: Unauthrized - 인증되지 않은 사용자, 학교
+        404:
+          description: Not Found - 찾을 수 없음
+        500:
+          description: Internal server error - 내부 서버 오류
+    post:
+      tags:
+        - "schools"
+      summary: "Create school - [학교 등록]"
+      description: "학교를 신규 등록합니다. (ex. 사용자로서 학교 페이지를 생성하고 싶다.)"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/xml"
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "Body"
+          description: "학교 등록을 위한 필요 정보"
+          required: true
+          schema:
+            type: object
+            required:
+              - owner
+              - region
+              - schoolName
+            properties:
+              owner:
+                type: string
+              schoolName:
+                type: string
+              region:
+                type: string
+      responses:
+        200:
+          description: OK - 처리 완료
+        401:
+          description: Unauthrized - 인증되지 않은 사용자, 학교
+        404:
+          description: Not Found - 찾을 수 없음
+        500:
+          description: Internal server error - 내부 서버 오류
+  /posts:
+    get:
+      tags:
+        - "posts"
+      summary: "Get all feeds - [글(피드) 조회]"
+      description: "등록된 전체 글(피드)를 조회합니다."
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/xml"
+        - "application/json"
+      responses:
+        200:
+          description: OK - 처리 완료
+        401:
+          description: Unauthrized - 인증되지 않은 사용자, 학교
+        404:
+          description: Not Found - 찾을 수 없음
+        500:
+          description: Internal server error - 내부 서버 오류
+    post:
+      tags:
+        - "posts"
+      summary: "Create school - [글(피드) 등록]"
+      description: "사용자가 학교 페이지에 글을 올립니다. (ex. 학교 관리자로서 학교 페이지에 글을 작성하고 싶다.)"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/xml"
+        - "application/json"
+      parameters:
+        - in: body
+          name: Body
+          required: true
+          schema:
+            type: object
+            required:
+              - userId
+              - region
+              - schoolName
+              - contents
+            properties:
+              userId:
+                type: string
+              region:
+                type: string
+              schoolName:
+                type: string
+              type:
+                type: string
+              contents:
+                type: string
+      responses:
+        200:
+          description: OK - 처리 완료
+        401:
+          description: Unauthrized - 인증되지 않은 사용자, 학교
+        404:
+          description: Not Found - 찾을 수 없음
+        500:
+          description: Internal server error - 내부 서버 오류
+  /posts/{userId}:
+    get:
+      tags:
+        - "posts"
+      summary: "Get feeds from user subscribe - [사용자 구독중인 페이지 글(피드) 조회]"
+      description: "사용자가 구독하는 학교 페이지들의 글을 조회합니다. (ex. 사용자로서 구독중인 학교 글을 뉴스피드에서 받아 볼 수 있다.)"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/xml"
+        - "application/json"
+      parameters:
+        - in: path
+          name: userId
+          type: string
+          required: true
+      responses:
+        200:
+          description: OK - 처리 완료
+        401:
+          description: Unauthrized - 인증되지 않은 사용자, 학교
+        404:
+          description: Not Found - 찾을 수 없음
+        500:
+          description: Internal server error - 내부 서버 오류
+definitions:
+  Post:
+    properties:
+      type:
+        type: string
+        enum:
+          - "general"
+          - "notice"
+      contents:
+        type: string
+        required: true
+      createTime:
+        type: string
+        format: date-time
+      creator:
+        $ref: "#/definitions/User"
+      from:
+        $ref: "#/definitions/School"
+    xml:
+      name: Post
+  School:
+    properties:
+      owner:
+        type: string
+        required: true
+      region:
+        type: string
+        required: true
+      schoolName:
+        type: integer
+        required: true
+      createTime:
+        type: string
+        format: date-time
+    xml:
+      name: School
+  User:
+    type: "object"
+    required:
+      - "name"
+    properties:
+      userId:
+        type: "string"
+      position:
+        type: "string"
+        description: "사용자 타입"
+        enum:
+          - "student"
+          - "teacher"
+          - "parent"
+    xml:
+      name: User
+  Follow:
+    type: "object"
+    properties:
+      userId:
+        $ref: "#/definitions/User"
+      subscribeTo:
+        $ref: "#/definitions/School"
+      startFollow:
+        type: "string"
+        format: "date-time"
+      endFollow:
+        type: "string"
+        format: "date-time"
+    xml:
+      name: Follow
+externalDocs:
+  description: Find out more about Swagger
