@@ -1,0 +1,18 @@
+config:
+  target: "http://localhost:4500"
+  phases:
+    - duration: 60
+      arrivalRate: 20
+    - duration: 600
+      arrivalRate: 50
+  processor: "../generateRandomData.js"
+scenarios:
+  - name: "Create a user"
+    flow:
+      - function: "generateRandomData"
+      - post:
+          url: "/users"
+          json:
+            userId: "{{ userId }}"
+            position: "{{ position }}"
+      - log: "Sent a request to /users with {{ userId }}, {{ position }}"
