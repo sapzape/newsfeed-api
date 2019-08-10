@@ -16,9 +16,11 @@ const options = {
       description: "Newsfeed API"
     },
     host: "localhost:4500",
-    basePath: "/"
+    basePath: "/",
+    consumes: "application/json",
+    produces: "application/json"
   },
-  apis: ["./routes/*.js", "./helpers/swagger/parameters.json"]
+  apis: ["./helpers/swagger/swagger.yaml"]
 }
 const swaggerSpec = swaggerDoc(options)
 
