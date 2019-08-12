@@ -8,7 +8,8 @@ API implementation related to SNS newsfeed feature.
 
 1.  [Install Node.js](https://nodejs.org/en/download/).
 2.  Execute `npm install` to install the development dependencies.
-3.  `npm start`
+3.  [Install mongodb and run](https://docs.mongodb.com/manual/installation/#mongodb-community-edition-installation-tutorials). 
+4.  `npm start`
 
 ## Test
 
