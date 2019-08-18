@@ -19,3 +19,9 @@ API implementation related to SNS newsfeed feature.
 ## API Specification
 
 After running the API server, check the server `hostadress+/api-docs`.
+
+## Improvement needs
+1. Status code redefinition required.
+2. Eager loading.
+3. Modularity (requires separation of controller and service).
+4. RDBMS switch required.
